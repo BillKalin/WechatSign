@@ -42,6 +42,7 @@ class SignService : AccessibilityService() {
     private val mHandler: Handler = OptionHandler()
     private var isSigningTask = false
     private var mIsStartWorkJob = false
+    private var mManualSign = false
 
     override fun onCreate() {
         super.onCreate()
@@ -217,7 +218,10 @@ class SignService : AccessibilityService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val action = intent?.action
         when (ACTION_DO_ALARM_SIGN) {
-            action -> doSignTask()
+            action -> {
+                mManualSign = true
+                doSignTask()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -256,6 +260,7 @@ class SignService : AccessibilityService() {
                 if (mCurrStep == STEP_BACK_HOME) {
                     Log.e(TAG, "返回")
                     isSigningTask = false
+                    mManualSign = false
                     mCurrStep = STEP_PREPARED
                     performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
                     postDelayed({
@@ -295,11 +300,12 @@ class SignService : AccessibilityService() {
 
                         findSpecialView(iit, SIGN_TEXT)
                         Toast.makeText(SignApplication.getApp(), "打卡成功!!!", Toast.LENGTH_LONG).show()
-
-                        if (mIsStartWorkJob) {
-                            SharePrefHelper.putBoolean(IS_FINISH_START_WORK_SIGN_TASK, true)
-                        } else {
-                            SharePrefHelper.putBoolean(IS_FINISH_OFF_WORK_SIGN_TASK, true)
+                        if (!mManualSign) {
+                            if (mIsStartWorkJob) {
+                                SharePrefHelper.putBoolean(IS_FINISH_START_WORK_SIGN_TASK, true)
+                            } else {
+                                SharePrefHelper.putBoolean(IS_FINISH_OFF_WORK_SIGN_TASK, true)
+                            }
                         }
                         Log.e(TAG, "找到定位界面的打卡按钮")
 
