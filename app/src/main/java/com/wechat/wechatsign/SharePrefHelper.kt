@@ -59,7 +59,7 @@ fun getStartWorkStartTimeStr(): String {
 }
 
 fun getStartWorkStopTimeStr(): String {
-    return SharePrefHelper.getString(SIGN_TASK_START_WORK_START_TIME, "11:00")
+    return SharePrefHelper.getString(SIGN_TASK_START_WORK_STOP_TIME, "11:00")
 }
 
 fun getOffWorkStartTimeStr(): String {
