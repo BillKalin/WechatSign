@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">打卡助手</string>
+    <string name="acc_desc">打开开关，自动帮你打卡</string>
+</resources>
