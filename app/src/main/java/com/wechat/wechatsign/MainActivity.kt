@@ -153,10 +153,10 @@ class MainActivity : AppCompatActivity() {
                 if (isStart) {
                     SharePrefHelper.putString(SIGN_TASK_STOP_WORK_START_TIME, timeStr)
                     Toast.makeText(this, "下班打卡开始时间:$timeStr", Toast.LENGTH_SHORT).show()
-                    startTimeTv.text = "$timeStr"
+                    offworkStartTimeTv.text = "$timeStr"
                 } else {
                     SharePrefHelper.putString(SIGN_TASK_STOP_WORK_STOP_TIME, "$timeStr")
-                    stopTimeTv.text = "$timeStr"
+                    offworkStopTimeTv.text = "$timeStr"
                     Toast.makeText(this, "下班打卡结束时间:$timeStr", Toast.LENGTH_SHORT).show()
                 }
             }
