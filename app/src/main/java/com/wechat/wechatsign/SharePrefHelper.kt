@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 
 const val IS_OPEN_START_WORK_SIGN_TASK = "is_open_start_work_sign_task"
 const val IS_OPEN_STOP_WORK_SIGN_TASK = "is_open_stop_work_sign_task"
+const val IS_OPEN_WEEKEND_SIGN_TASK = "is_open_weekend_sign_task"
 
 const val SIGN_TASK_START_WORK_START_TIME = "sign_task_start_work_start_time"
 const val SIGN_TASK_START_WORK_STOP_TIME = "sign_task_start_work_stop_time"

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SwitchCompat
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
@@ -25,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var offworkStopTimeTv: TextView
     private lateinit var mStartWorkSwitch:CheckBox
     private lateinit var mStopWorkSwitch:CheckBox
+    private lateinit var mWeekSwitch:CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         offworkStopTimeTv = findViewById(R.id.stop_time_tv1)
         mStartWorkSwitch = findViewById(R.id.start_work_cb)
         mStopWorkSwitch = findViewById(R.id.off_work_cb)
-
+        mWeekSwitch = findViewById(R.id.weekend_ck)
 
         val startTimeStr = getStartWorkStartTimeStr()
         val stopTimeStr = getStartWorkStopTimeStr()
@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         val offStopTimeStr = getOffWorkStopTimeStr()
         val isStartOpen = SharePrefHelper.getBoolean(IS_OPEN_START_WORK_SIGN_TASK, false)
         val isOffOpen = SharePrefHelper.getBoolean(IS_OPEN_STOP_WORK_SIGN_TASK, false)
+        val isWeekOpen = SharePrefHelper.getBoolean(IS_OPEN_WEEKEND_SIGN_TASK, false)
 
         startTimeTv.text = formatTime(startTimeStr)
         stopTimeTv.text = formatTime(stopTimeStr)
@@ -54,8 +55,9 @@ class MainActivity : AppCompatActivity() {
         offworkStopTimeTv.text = formatTime(offStopTimeStr)
         mStartWorkSwitch.isChecked = isStartOpen
         mStopWorkSwitch.isChecked = isOffOpen
+        mWeekSwitch.isChecked = isWeekOpen
 
-        val cbCheckCHange = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+        val cbCheckChange = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
             when(buttonView.id) {
                 R.id.start_work_cb -> {
                     SharePrefHelper.putBoolean(IS_OPEN_START_WORK_SIGN_TASK, isChecked)
@@ -63,10 +65,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.off_work_cb -> {
                     SharePrefHelper.putBoolean(IS_OPEN_STOP_WORK_SIGN_TASK, isChecked)
                 }
+                R.id.weekend_ck -> {
+                    SharePrefHelper.putBoolean(IS_OPEN_WEEKEND_SIGN_TASK, isChecked)
+                }
             }
         }
-        mStartWorkSwitch.setOnCheckedChangeListener(cbCheckCHange)
-        mStopWorkSwitch.setOnCheckedChangeListener(cbCheckCHange)
+        mStartWorkSwitch.setOnCheckedChangeListener(cbCheckChange)
+        mStopWorkSwitch.setOnCheckedChangeListener(cbCheckChange)
+        mWeekSwitch.setOnCheckedChangeListener(cbCheckChange)
     }
 
     fun onClick(v: View) {

@@ -26,7 +26,7 @@ class SignService : AccessibilityService() {
 
         const val SIGN_TEXT = "com.tencent.wework:id/bem"
         const val WORK_SPACE_TEXT = "工作台"
-        const val WORK_SIGN_TEXT = "第三方应用"
+        const val WORK_SIGN_TEXT = "打卡"
         const val STEP_PREPARED = 0
         const val STEP_CLICK_WORKSPACE = 1
         const val STEP_CLICK_SIGN = 2
@@ -59,8 +59,14 @@ class SignService : AccessibilityService() {
     }
 
     private fun checkToDoSignTask() {
+        val day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val min = Calendar.getInstance().get(Calendar.MINUTE)
+        val isWeek = SharePrefHelper.getBoolean(IS_OPEN_WEEKEND_SIGN_TASK, false)
+        if ((day == Calendar.SATURDAY || day == Calendar.SUNDAY) && !isWeek) {
+            Log.e(TAG, " 现在是周末：不打卡")
+            return
+        }
         val isOpenStartWork = SharePrefHelper.getBoolean(IS_OPEN_START_WORK_SIGN_TASK, false)
         val isOpenOffWork = SharePrefHelper.getBoolean(IS_OPEN_STOP_WORK_SIGN_TASK, false)
         Log.e(TAG, " 现在时间: ${formatTime("$hour:$min")} -> 是否开启自动打卡：${isOpenStartWork || isOpenOffWork}")
