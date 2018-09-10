@@ -37,6 +37,13 @@ class SignService : AccessibilityService() {
         const val TIME_OUT = 5000L
         var mStartOpen = false
         var mCurrStep = STEP_PREPARED
+
+        fun goBackMainAct() {
+            val context = SignApplication.getApp()
+            val intent = Intent(context, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
     }
 
     private val mHandler: Handler = OptionHandler()
@@ -155,8 +162,9 @@ class SignService : AccessibilityService() {
         event?.let {
             if (it.packageName == PACKAGE_WECHAT_WORK) {
                 val eventType = event.eventType
-                if (eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
-                    Log.e(TAG, "onAccessibilityEvent -> isSigningTask：$isSigningTask")
+                Log.e(TAG, "onAccessibilityEvent -> isSigningTask：$isSigningTask & eventType = $eventType")
+//                if (eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || eventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED
+//                        || eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
                     if (!isSigningTask)
                         return
                     val sourceEvent = event.source
@@ -181,7 +189,7 @@ class SignService : AccessibilityService() {
                             }
                         }
                     }
-                }
+//                }
             }
         }
     }
@@ -247,6 +255,8 @@ class SignService : AccessibilityService() {
     private fun gotoWeWork() {
         val intent = packageManager.getLaunchIntentForPackage(PACKAGE_WECHAT_WORK)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
         startActivity(intent)
     }
 
@@ -259,15 +269,21 @@ class SignService : AccessibilityService() {
             if (what == MSG_BACK) {
                 if (mCurrStep == STEP_BACK_HOME) {
                     Log.e(TAG, "返回")
-                    isSigningTask = false
                     mManualSign = false
                     mCurrStep = STEP_PREPARED
-                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                    postDelayed({
-                        removeCallbacksAndMessages(null)
-                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
-                        Log.e(TAG, "回到桌面")
-                    }, 1500L)
+//                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                    removeCallbacksAndMessages(null)
+                    isSigningTask = false
+//                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                    goBackMainAct()
+//
+//                    postDelayed({
+//                        removeCallbacksAndMessages(null)
+//                        isSigningTask = false
+////                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+//                        goBackMainAct()
+//                        Log.e(TAG, "回到桌面")
+//                    }, 1500L)
                     return
                 }
             }
