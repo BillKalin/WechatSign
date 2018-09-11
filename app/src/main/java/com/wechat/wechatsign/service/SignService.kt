@@ -269,21 +269,16 @@ class SignService : AccessibilityService() {
             if (what == MSG_BACK) {
                 if (mCurrStep == STEP_BACK_HOME) {
                     Log.e(TAG, "返回")
+                    isSigningTask = false
                     mManualSign = false
                     mCurrStep = STEP_PREPARED
-//                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                    removeCallbacksAndMessages(null)
-                    isSigningTask = false
-//                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                    goBackMainAct()
-//
-//                    postDelayed({
-//                        removeCallbacksAndMessages(null)
-//                        isSigningTask = false
-////                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-//                        goBackMainAct()
-//                        Log.e(TAG, "回到桌面")
-//                    }, 1500L)
+                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                    postDelayed({
+                        removeCallbacksAndMessages(null)
+//                        performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+                        goBackMainAct()
+                        Log.e(TAG, "回到桌面")
+                    }, 1500L)
                     return
                 }
             }
@@ -298,6 +293,7 @@ class SignService : AccessibilityService() {
                             Log.e(TAG, "找到工作台按钮")
                         } else {
                             postDelayed(timeOutRunnable, TIME_OUT)
+                            Log.e(TAG, "没找到工作台按钮")
                         }
                     }
                     STEP_CLICK_SIGN -> {
@@ -306,15 +302,19 @@ class SignService : AccessibilityService() {
                             mCurrStep = STEP_CLICK_SIGN_BTN
                             Log.e(TAG, "找到工作台的打卡按钮")
                         } else {
+                            Log.e(TAG, "没找到工作台的打卡按钮")
                             postDelayed(timeOutRunnable, TIME_OUT)
                         }
                     }
                     STEP_CLICK_SIGN_BTN -> {
                         removeCallbacks(timeOutRunnable)
-                        mCurrStep = STEP_BACK_HOME
-                        sendEmptyMessageDelayed(MSG_BACK, 5000L)
 
-                        findSpecialView(iit, SIGN_TEXT)
+
+                        if(findSpecialView(iit, SIGN_TEXT)) {
+                            Log.e(TAG, "找到打卡圆圈")
+                        } else{
+                            Log.e(TAG, "没找到打卡圆圈")
+                        }
                         Toast.makeText(SignApplication.getApp(), "打卡成功!!!", Toast.LENGTH_LONG).show()
                         if (!mManualSign) {
                             if (mIsStartWorkJob) {
@@ -323,8 +323,8 @@ class SignService : AccessibilityService() {
                                 SharePrefHelper.putBoolean(IS_FINISH_OFF_WORK_SIGN_TASK, true)
                             }
                         }
-                        Log.e(TAG, "找到定位界面的打卡按钮")
-
+                        mCurrStep = STEP_BACK_HOME
+                        sendEmptyMessageDelayed(MSG_BACK, 5000L)
 //
 //                        if (findSpecialView(iit, SIGN_TEXT)) {
 //                            mCurrStep = STEP_PREPARED
